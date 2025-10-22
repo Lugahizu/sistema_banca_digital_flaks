@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Mi perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">    
+</head>
+<body>
+    <h1>Mi perfil</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                    <div class="flash-{{ category }}">{{ message }}</div>
+                {% endfor %} 
+            </div>
+        {% endif %}
+    {% endwith %}
+    <p>Hola, <strong>{{ current_user.name }} </strong></p>
+    <p>Tu cedula es: <strong>{{ current_user.id }}</strong></p>
+    <h2>Actualizar perfil</h2>
+    <form action="{{ url_for('main.profile') }}" method="post">
+        <label for="new_name">Nuevo nombre:</label>
+        <input type="text" id="new_name" name="new_name" value="{{ current_user.name }}">
+        <label for="new_password">Nueva Contraseña:</label>
+        <input type="password" id="new_password" name="new_password">
+        <br>
+        <hr>
+        <br>
+        <label for="current_password">Contraseña actual (Obligatoria para guardar cambios):</label>
+        <input type="password" id="current_password" name="current_password" required>
+        <button type="submit">Guardar cambios</button>        
+    </form>    
+    <br>
+    <a href="{{ url_for('main.index') }}">Volver al inicio</a>
+</body>
+</html>

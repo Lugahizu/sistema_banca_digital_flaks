@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>       
+        <meta charset="utf-8" />
+        <title>Bank</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>            
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% if current_user.is_authenticated %}
+            <h1>¡Hola, {{ current_user.name }}!</h1>
+            <p>Bienvenido a tu banca personal</p>
+            <hr>  
+            <p> 
+                <a href="{{ url_for('main.profile') }}">Ver/Actualizar mi perfil</a>
+                <a href="{{ url_for('main.logout') }}">Cerrar Sesión</a>
+                {% if current_user.role == 'admin' %}
+                    <strong><a href="{{ url_for('main.admin_dashboard') }}">PANEL DE ADMINISTRACIÓN</a></strong>
+                {% endif %}
+            </p>
+            <hr>
+            {% if current_user.role == 'cliente' %}
+                <div class="main-container">
+                    <div class="form-container">                    
+                        <h3>Borrar Usuario</h3>
+                        <form action="{{ url_for('main.delete_user') }}", method="POST">
+                            <label for="id_usuario_borrar">ID de usuario (cedula):</label><br>
+                            <input type="number" id="id_usuario_borrar" name="id_usuario_borrar" placeholder="Introduce el ID de usuario a borrar" required><br><br>
+                            <button type="submit">Borrar Usuario</button>
+                        </form>
+                    </div>
+                    <div class="form-container">
+                        <h2>Operaciones con transacciones</h2>
+                        <h3>Insertar transacciones</h3>
+                        <form action="{{ url_for('main.insert_transaction') }}" method="POST">
+                            <label for="id_cuenta_transaction">ID de cuenta:</label><br>
+                            <input type="number" id="id_cuenta_transaction" name="id_account" placeholder="ID de cuenta" required><br><br>
+                            <label for="monto_transaccion">Monto:</label><br>
+                            <input type="number" id="monto_transaccion" name="amount" placeholder="Monto de la transaccion" min="0" required><br><br>
+                            <label for="tipo_transaccion">Tipo de transaccion:</label><br>
+                            <select id="tipo_transaccion" name="type_transaction">
+                                <option value="deposito">Deposito</option>
+                                <option value="retiro">Retiro</option>
+                            </select><br><br>
+                            <button type="submit">Insetar Transaccion</button>
+                        </form>                        
+                    </div>         
+                </div>
+            {% endif %}
+            <hr>            
+        {% else %}
+            <h1>Bienvenido al sistema bancario</h1>
+            <p>
+                <a href="{{ url_for('main.login') }}">Inicia sesion</a> o <a href="{{ url_for('main.register') }}" >Registrarse</a>
+            </p>  
+        {% endif %}          
+    </body>
+</html>

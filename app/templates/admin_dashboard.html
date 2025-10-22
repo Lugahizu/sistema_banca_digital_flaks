@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Bank</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body> 
+        <h1>Panel de Administración</h1>
+        <p>Bienvenido, Administrador {{ current_user.name }}. Tienes control total sobre el sistema.</p>
+        <hr>       
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <div class="main-container">
+                <div class="form-container">
+                    <h2>Operaciones con Usuarios</h2>
+                    <hr>
+                    <h3>Actualizar Usuario</h3>
+                    <form action="{{ url_for('main.update_user') }}" method="POST">
+                        <label for="id_usuario_actualizado">ID de usuario (Cedula):</label><br>
+                        <input type="number" id="id_usuario_actualizado" name="id_usuario" placeholder="ID de usuario a actualizar" required><br><br>
+                        <label for="nombre_usuario_actualizado">Nuevo nombre:</label><br>
+                        <input type="text" id="nombre_usuario_actualizado" name="nombre" placeholder="Nuevo nombre" required><br><br>
+                        <button type="submit">Actualizar Usuario</button>
+                    </form>
+                    <h3>Borrar Usuario</h3>
+                    <form action="{{ url_for('main.delete_user') }}" method="POST">
+                        <label for="id_usuario_borrar">ID de usuario (cedula):</label><br>
+                        <input type="number" id="id_usuario_borrar" name="id_usuario_borrar" placeholder="Introduce el ID de usuario a borrar" required><br><br>
+                        <button type="submit">Borrar Usuario</button>
+                    </form>
+                </div>
+                <div class="form-container">
+                    <h2>Operaciones con Cuentas</h2>
+                    <h3>Insertar Cuenta</h3>
+                    <form action="{{ url_for('main.insert_account') }}" method="POST">
+                        <label for="id_usuario_cuenta">ID de ususario (Cedula):</label><br>
+                        <input type="number" id="id_usuario_cuenta" name="id_usuario" placeholder="ID de usuario" required><br><br>
+                        <label for="monto_inicial">Monto inicial:</label><br>
+                        <input type="number" id="monto_inicial" name="monto" placeholder="Monto inicial" min="0" required><br><br>
+                        <label for="tipo_cuenta">Tipo de cuenta:</label><br>
+                        <select id="tipo_cuenta" name="tipo_cuenta">
+                            <option value="ahorros">Ahorros</option>
+                            <option value="corriente">Corriente</option>
+                        </select><br><br>
+                        <button type="submit">Insertar Cuenta</button>
+                    </form>
+                    <h3>Actualizar Cuenta</h3>
+                    <form action="{{ url_for('main.update_account') }}" method="POST">
+                        <label for="id_cuenta_actualizar">ID de cuenta:</label><br>
+                        <input type="number" id="id_cuenta_actualizar" name="id_account" placeholder="ID de la cuenta a actualizar" required><br><br>
+                        <label for="monto_actualizado">Nuevo monto:</label><br>
+                        <input type="number" id="monto_actualizado" name="new_amount" placeholder="Nuevo monto" min="0" required><br><br>
+                        <button type="submit">Actualizar Cuenta</button>
+                    </form>
+                </div>
+                <div class="form-container">
+                    <h2>Operaciones con transacciones</h2>
+                    <h3>Insertar transacciones</h3>
+                    <form action="{{ url_for('main.insert_transaction') }}" method="POST">
+                        <label for="id_cuenta_transaction">ID de cuenta:</label><br>
+                        <input type="number" id="id_cuenta_transaction" name="id_account" placeholder="ID de cuenta" required><br><br>
+                        <label for="monto_transaccion">Monto:</label><br>
+                        <input type="number" id="monto_transaccion" name="amount" placeholder="Monto de la transaccion" min="0" required><br><br>
+                        <label for="tipo_transaccion">Tipo de transaccion:</label><br>
+                        <select id="tipo_transaccion" name="type_transaction">
+                            <option value="deposito">Deposito</option>
+                            <option value="retiro">Retiro</option>
+                        </select><br><br>
+                        <button type="submit">Insetar Transaccion</button>
+                    </form>
+                    <h3>Actualizar Transaccion</h3>
+                    <form action="{{ url_for('main.update_transaction') }}" method="POST">
+                        <label for="id_transaction_actualizar">ID Transaction</label><br>
+                        <input type="number" id="id_transaction_actualizar" name="id_transaction" placeholder="ID de la transaction" required><br><br>
+                        <label for="monto_transaccion_actualizar">Nuevo monto</label><br>
+                        <input type="number" id="monto_transaccion_actualizar" name="new_amount" placeholder="Nuevo monto" min="0" required><br><br>
+                        <label for="tipo_transaccion_actualizar">Nuevo tipo</label><br>
+                        <select id="tipo_transaccion_actualizar" name="new_type">
+                            <option value="">(No cambiar)</option>
+                            <option value="deposito">Deposito</option>
+                            <option value="retiro">Retiro</option>
+                        </select><br><br>
+                        <button type="submit">Actualizar Transaccion</button>
+                    </form>
+                    <h3>Borrar Transaccion</h3>
+                    <form action="{{ url_for('main.delete_transaction') }}" method="POST">
+                        <label for="id_transaction_borrar">ID Transaccion</label><br>
+                        <input type="number" id="id_transaction_borrar" name="transaction_id" placeholder="ID transaction a borrar" required><br><br>
+                        <button type="submit">Borrar Transaccion</button>
+                    </form>
+                </div>
+                <div class="form-container">
+                    <h2>Ver datos</h2>
+                    <form action="{{ url_for('main.view_table') }}" method="GET">        
+                        <select id="opciones" name="ver_tabla">
+                            <option value="">--Elige una opcion--</option>
+                            {% for table_name in tables_for_select %}
+                                <option value="{{ table_name }}">{{ table_name | capitalize }}</option>
+                                {% endfor %}
+                        </select>
+                        <br><br>
+                        <button type="submit">Ver datos</button>
+                    </form>   
+                </div>
+            </div>
+            <hr>
+            <p>
+                <a href="{{ url_for('main.index') }}">Volver al Inicio</a> |
+                <a href="{{ url_for('main.logout') }}">Cerrar Sesion</a>
+            </p>
+    </body>
+</html>
